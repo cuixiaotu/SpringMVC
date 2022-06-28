@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+         version="4.0">
+    <!--配置springMVC的前端控制器 对请求做统一处理-->
+    <!-- 此配置作用下 SpringMVC的配置文件默认位于WEB-INF下，默认名称为<servlet-name>-servlet.html
+    以下配置所对应springMVC的配置文件位于WEB-INF下，文件名为springMVC-servlet.xml -->
+    <servlet>
+        <servlet-name>SpringMVC</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <!--配置springMVC的配置文件名称和位置 -->
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>classpath:springMVC.xml</param-value><!--classpath => java/resources -->
+        </init-param>
+        <!--将前端控制器DispatcherServlet初始化提前至服务器启动时-->
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SpringMVC</servlet-name>
+        <!-- 设置springMVC的核心控制器所处理的请求的请求方式
+              所匹配的请求可以是/login或.html或.js或.css的请求方式
+              但是不能匹配.jsp请求路径的请求
+              /  不包括
+              /* 包括jsp
+         -->
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+
+</web-app>
