@@ -7,6 +7,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="SpringMVC-demo3" />
+        <module name="SpringMVC-jsp" />
         <module name="SpringMVC-demo2" />
         <module name="SpringMVC-demo1" />
       </profile>

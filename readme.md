@@ -94,7 +94,7 @@ Spring版本：5.3.2
 
 注：由于 Maven 的传递性，我们不必将所有需要的包全部配置依赖，而是配置最顶端的依赖，其他靠传递性导入。
 
-![image-20220623181848434](images/readme/image-20220623181848434.png)
+![image-20220630151526865](images/readme/image-20220630151526865.png)
 
 ## 3.配置web.xml
 
@@ -305,7 +305,7 @@ public String testRequestMapping(){
 
 
 
-## 4. @RequestMapping注解的method属性
+## 4、@RequestMapping注解的method属性
 
 @RequestMapping注解的method属性通过请求的请求方式（get或post）匹配请求映射
 
@@ -352,7 +352,7 @@ public String testRequestMapping(){
 
 
 
-## 5.RequestMapping注解的params属性
+## 5、@RequestMapping注解的params属性
 
 @RequestMapping注解的params属性通过请求的请求参数匹配请求映射
 
@@ -389,7 +389,7 @@ public String testRequestMapping(){
 
 
 
-## 6、@RequestMapping注解的headers属
+## 6、@RequestMapping注解的headers属性
 
 @RequestMapping注解的headers属性通过请求的请求头信息匹配请求映射
 
@@ -506,7 +506,7 @@ defaultValue：不管required属性值为true或false，当value所指定的请�
 
 @RequestHeader注解一共有三个属性：value、required、defaultValue，用法同@RequestParam
 
-### 5、@CookieValue
+## 5、@CookieValue
 
 @CookieValue是将cookie数据和控制器方法的形参创建映射关系
 
@@ -539,7 +539,7 @@ public String testpojo(User user){
 }
 ```
 
-### 7、解决获取请求参数时的乱码问题
+## 7、解决获取请求参数时的乱码问题
 
 解决获取请求参数的乱码问题，可以使用SpringMVC提供的编码过滤器CharacterEncodingFilter，但是必须在web.xml中进行注册
 
@@ -679,5 +679,103 @@ public String testApplication(HttpSession session){
 
 
 
+# 六、SpringMVC的视图
 
+
+
+SpringMVC中的视图是View接口，视图的作用渲染数据，将模型Model中的数据展示给用户
+
+SpringMVC视图的种类很多，默认有转发视图和重定向视图
+
+当工程引入jstl的依赖，转发视图会自动转换为JstlView
+
+若使用的视图技术为Thymeleaf，在SpringMVC的配置文件中配置了Thymeleaf的视图解析器，由此视图解析器解析之后所得到的是ThymeleafView
+
+## 1、ThymeleafView
+
+当控制器方法中所设置的视图名称没有任何前缀时，此时的视图名称会被SpringMVC配置文件中所配置的视图解析器解析，视图名称拼接视图前缀和视图后缀所得到的最终路径，会通过转发的方式实现跳转
+
+```java
+@RequestMapping("/testView")
+public String testView(){
+	return "test_view";
+}
+```
+
+源码调试断点路径：  return  "test_view"=>  DispatcherServlet.doDispatch=>DispatcherServlet.processDispatchResult=>DispatcherServlet.render
+
+![image-20220630151346517](images/readme/image-20220630151346517.png)
+
+
+
+
+
+## 2、转发视图
+
+SpringMVC中默认的转发视图是InternalResourceView
+
+SpringMVC中创建转发视图的情况：
+
+当控制器方法中所设置的视图名称以"forward:"为前缀时，创建InternalResourceView视图，此时的视图名称不会被SpringMVC配置文件中所配置的视图解析器解析，而是会将前缀"forward:"去掉，剩余部分作为最终路径通过转发的方式实现跳转
+
+例如"forward:/"，"forward:/testFor"
+
+```java
+@RequestMapping("/testForwardView")
+public String testForwardView(){
+	return "forward:/testThymeleafView";
+}
+```
+
+## 3、重定向视图
+
+SpringMVC中默认的重定向视图是RedirectView
+
+当控制器方法中所设置的视图名称以"redirect:"为前缀时，创建RedirectView视图，此时的视图名称不会被SpringMVC配置文件中所配置的视图解析器解析，而是会将前缀"redirect:"去掉，剩余部分作为最终路径通过重定向的方式实现跳转
+
+例如"redirect:/"，"redirect:/testThymeleafView"
+
+```java
+@RequestMapping("/testRedirectView")
+public String testForwardView(){
+	return "redirect:/testThymeleafView";
+}
+```
+
+## 4、视图控制器view-controller
+
+当控制器方法中，仅仅用来实现页面跳转，即只需要设置视图名称时，可以将处理器方法使用view-controller标签进行表示
+
+```xml
+<!--
+	path：设置处理的请求地址
+	view-name：设置请求地址所对应的视图名称
+-->
+<mvc:view-controller path="/testView" view-name="success"></mvc:view-controller>
+```
+
+> 注：
+>
+> 当SpringMVC中设置任何一个view-controller时，其他控制器中的请求映射将全部失效，此时需要在SpringMVC的核心配置文件中设置开启mvc注解驱动的标签：
+>
+> <mvc:annotation-driven />
+
+## 5、JSP
+
+
+
+SpringMVC.xml
+
+```xml
+<context:component-scan base-package="com.xiaotu.mvc"></context:component-scan>
+
+<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+	<property name="prefix" value="/WEB-INF/templates/"></property>
+	<property name="suffix" value=".jsp"></property>
+</bean>
+```
+
+```jsp
+<a href="${pageContext.request.contextPath}/success">访问success.jsp</a>
+```
 
