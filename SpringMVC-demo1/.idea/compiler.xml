@@ -9,6 +9,7 @@
         <module name="SpringMVC-demo3" />
         <module name="SpringMVC-jsp" />
         <module name="SpringMVC-demo2" />
+        <module name="SpringMVC-rest" />
         <module name="SpringMVC-demo1" />
       </profile>
     </annotationProcessing>
