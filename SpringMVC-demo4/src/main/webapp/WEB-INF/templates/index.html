@@ -29,6 +29,14 @@
 <div id="app">
     <a th:href="@{/testAjax}" @click="testAjax">SpringMVC处理ajax</a>
 </div>
+<br/>
+
+<a th:href="@{testDownload}">测试下载</a><br/>
+
+<form  enctype="multipart/form-data" name="photo" th:action="@{testUpload}" method="post">
+    <input name="文件开年" type="file">
+    <input name="上传" type="submit">
+</form>
 
 <script type="text/javascript" th:src="@{/static/js/vue.js}"></script>
 <script type="text/javascript" th:src="@{/static/js/axios.min.js}"></script>
