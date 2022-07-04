@@ -6,12 +6,13 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="SpringMVC-demo4" />
-        <module name="SpringMVC-demo3" />
         <module name="SpringMVC-jsp" />
         <module name="SpringMVC-demo2" />
         <module name="SpringMVC-rest" />
         <module name="SpringMVC-demo1" />
+        <module name="SpringMVC-demo4" />
+        <module name="SpringMVC-demo3" />
+        <module name="SpringMVC-demo5" />
       </profile>
     </annotationProcessing>
   </component>
