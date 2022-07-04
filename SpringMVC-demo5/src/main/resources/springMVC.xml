@@ -37,8 +37,32 @@
 
 
     <!--配置拦截器-->
+<!--    <bean class="com.xiaotu.mvc.interceptors.FirstInterceptor"></bean>
+    <ref bean="firstInterceptor"></ref>
+     以上两种配置方式都是对DispatcherServlet所处理的所有的请求进行拦截
+    <mvc:interceptor>
+        <mvc:mapping path="/**"/>
+        <mvc:exclude-mapping path="/test"/>
+        <ref bean="firstInterceptor"></ref>
+    </mvc:interceptor>-->
     <mvc:interceptors>
         <ref bean="firstInterceptor"></ref>
         <ref bean="secondInterceptor"></ref>
     </mvc:interceptors>
+
+    <!--配置异常处理器-->
+    <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+        <property name="exceptionMappings">
+            <props>
+                <!--
+                properties的键表示处理器方法执行过程中出现的异常
+                properties的值表示若出现指定异常时，设置一个新的视图名称，跳转到指定页面
+                -->
+                <prop key="java.lang.ArithmeticException"></prop>
+            </props>
+        </property>
+        <!-- exceptionAttribute属性设置一个属性名，将出现的异常信息在请求域中共享-->
+        <property name="exceptionAttribute" value="ex"></property>
+    </bean>
+
 </beans>
