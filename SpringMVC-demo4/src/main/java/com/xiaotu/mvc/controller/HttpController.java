@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -87,7 +88,7 @@ public class HttpController {
         return responseEntity;
     }
 
-    @RequestMapping("/testUpload")
+    @RequestMapping(value = "/testUpload",method = RequestMethod.POST)
     public String testUpload(MultipartFile photo,HttpSession session) throws IOException {
         //获取文件上传名称
         String fileName = photo.getOriginalFilename();

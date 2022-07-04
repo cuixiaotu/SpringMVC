@@ -1415,7 +1415,7 @@ ResponseEntity用于控制器方法的返回值类型，该控制器方法的返
 
 
 
-# 九、文件上传和下载
+# 十、文件上传和下载
 
 ## 1.文件的下载
 
@@ -1479,7 +1479,7 @@ b>在SpringMVC的配置文件中添加配置：
 c>控制器方法：
 
 ```java
-@RequestMapping("/testUp")
+@RequestMapping("/testUpload")
 public String testUp(MultipartFile photo, HttpSession session) throws IOException {
     //获取上传的文件的文件名
     String fileName = photo.getOriginalFilename();
@@ -1499,4 +1499,8 @@ public String testUp(MultipartFile photo, HttpSession session) throws IOExceptio
     return "success";
 }
 ```
+
+注意！！！
+
+前端上传 type="file" name="photo"  ，name的值即后台接收的字段名。
 

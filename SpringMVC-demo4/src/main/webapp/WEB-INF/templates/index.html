@@ -33,9 +33,9 @@
 
 <a th:href="@{testDownload}">测试下载</a><br/>
 
-<form  enctype="multipart/form-data" name="photo" th:action="@{testUpload}" method="post">
-    <input name="文件开年" type="file">
-    <input name="上传" type="submit">
+<form enctype="multipart/form-data" name="photo" th:action="@{testUpload}" method="post">
+    <input type="file" name="photo">
+    <input type="submit" name="上传">
 </form>
 
 <script type="text/javascript" th:src="@{/static/js/vue.js}"></script>
