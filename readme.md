@@ -1592,7 +1592,172 @@ public class ExceptionController {
         model.addAttribute("ex", ex);
         return "error";
     }
+}
+```
+
+
+
+
+
+# 十三、注解配置SpringMVC
+
+使用配置类和注解代替web.xml和SpringMVC配置文件的功能
+
+
+
+## 1、创建初始化类，代替web.xml
+
+在Servlet3.0的环境中，容器会在类路径中查找实现javax.servlet.ServletContainerInitializer接口的类，如果找到的话就用它来配置Servlet容器。
+
+Spring提供这个接口的现实，名为ServletContainerInitializer，这个类反过来又会查找实现WebApplicationInitializer的类并将配置的任务交给它们来完成。Spring3.2引入一个便利的WebApplicationInitializer基础实现。名为AbstractAnnotationConfigDispatcherServletInitalizer,当我们的类拓展了AbstractAnnotationConfigDiapatcherServletInitializer并将其部署到Servlet3.0容器的时候，容器发现它，并用它来配置Servlet上下文。
+
+```java
+public class WebInit extends AbstractAnnotationConfigDispatcherServletInitializer {
+
+    /**
+     * 指定spring的配置类
+     * @return
+     */
+    @Override
+    protected Class<?>[] getRootConfigClasses() {
+        return new Class[]{SpringConfig.class};
+    }
+
+    /**
+     * 指定SpringMVC的配置类
+     * @return
+     */
+    @Override
+    protected Class<?>[] getServletConfigClasses() {
+        return new Class[]{WebConfig.class};
+    }
+
+    /**
+     * 指定DispatcherServlet的映射规则，即url-pattern
+     * @return
+     */
+    @Override
+    protected String[] getServletMappings() {
+        return new String[]{"/"};
+    }
+
+    /**
+     * 添加过滤器
+     * @return
+     */
+    @Override
+    protected Filter[] getServletFilters() {
+        CharacterEncodingFilter encodingFilter = new CharacterEncodingFilter();
+        encodingFilter.setEncoding("UTF-8");
+        encodingFilter.setForceRequestEncoding(true);
+        HiddenHttpMethodFilter hiddenHttpMethodFilter = new HiddenHttpMethodFilter();
+        return new Filter[]{encodingFilter, hiddenHttpMethodFilter};
+    }
+}
+```
+
+
+
+## 2、创建SpringConfig配置类 代替Spring的配置文件
+
+```java
+@Congiguration
+public Class SpringConfig{
+	//ssm整合之后 spring的配置信息写在此类中
+}
+```
+
+
+
+## 3、创建WebConfig配置类 代替SpringMVC的配置
+
+```java
+/*
+* 代替springMVC的配置文件
+* 1.扫描组件
+* 2.视图解析器
+* 3.view-controller
+* 4.default-servlet-handler
+* 5.mvc注解驱动
+* 6.文件上传解析器
+* 7.拦截器
+* 8.异常处理
+* */
+@Configuration  //标识配置类
+@ComponentScan("com.xiaotu.mvc.controller")  //1.扫描组件
+@EnableWebMvc                                //6.mvc的注解驱动
+public class WebConfig implements WebMvcConfigurer {
+
+    //8.异常处理
+    @Override
+    public void configureHandlerExceptionResolvers(List<HandlerExceptionResolver> resolvers) {
+        SimpleMappingExceptionResolver exceptionResolver = new SimpleMappingExceptionResolver();
+        Properties prop = new Properties();
+        prop.setProperty("java.lang.ArithmeticException","error");
+        exceptionResolver.setExceptionMappings(prop);
+        exceptionResolver.setExceptionAttribute("exception");
+        resolvers.add(exceptionResolver);
+    }
+
+    //7.拦截器
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        TestInterceptor testInterceptor = new TestInterceptor();
+        registry.addInterceptor(testInterceptor).addPathPatterns("/**").excludePathPatterns("/test");
+    }
+
+    //6.文件上传解析器
+    @Bean
+    public MultipartResolver multipartResolver(){
+        CommonsMultipartResolver commonsMultipartResolver = new CommonsMultipartResolver();
+        return  commonsMultipartResolver;
+    }
+
+    //4.view-controller
+    @Override
+    public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
+        configurer.enable();
+    }
+
+    //3.view-controller
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+        registry.addViewController("hello").setViewName("hello");
+
+    }
+
+    //2.视图解析器
+    @Bean
+    public ITemplateResolver templateResolver(){
+        WebApplicationContext webApplicationContext = ContextLoader.getCurrentWebApplicationContext();
+
+        ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(
+                webApplicationContext.getServletContext()
+        );
+        templateResolver.setPrefix("/WEB-INF/templates/");
+        templateResolver.setSuffix(".html");
+        templateResolver.setCharacterEncoding("UTF-8");
+        templateResolver.setTemplateMode(TemplateMode.HTML);
+        return templateResolver;
+    }
+
+    @Bean
+    public SpringTemplateEngine templateEngine(ITemplateResolver templateResolver){
+        SpringTemplateEngine templateEngine = new SpringTemplateEngine();
+        templateEngine.setTemplateResolver(templateResolver);
+        return  templateEngine;
+    }
+
+    @Bean
+    public ViewResolver viewResolver(SpringTemplateEngine templateEngine){
+        ThymeleafViewResolver viewResolver = new ThymeleafViewResolver();
+        viewResolver.setCharacterEncoding("UTF-8");
+        viewResolver.setTemplateEngine(templateEngine);
+        return viewResolver;
+    }
 
 }
 ```
+
+
 

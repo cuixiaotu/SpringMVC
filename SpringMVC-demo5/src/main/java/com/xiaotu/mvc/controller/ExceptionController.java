@@ -14,6 +14,6 @@ public class ExceptionController {
     //ex表示当前请求处理中出现的异常对象
     public String testException(Exception ex,Model model){
         model.addAttribute("ex",ex);
-        return "error";
+        return "success";
     }
 }

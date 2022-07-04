@@ -12,6 +12,7 @@
         <module name="SpringMVC-demo1" />
         <module name="SpringMVC-demo4" />
         <module name="SpringMVC-demo3" />
+        <module name="SpringMVC-annotation" />
         <module name="SpringMVC-demo5" />
       </profile>
     </annotationProcessing>
